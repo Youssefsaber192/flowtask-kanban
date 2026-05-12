@@ -1,0 +1,102 @@
+<section class="dashboard-page">
+  <header class="page-header">
+    <div>
+      <!-- <p class="eyebrow">Angular Portfolio Project</p> -->
+      <h1>InvoiceFlow</h1>
+      <p class="description">
+        Accounts receivable dashboard connected to MockAPI with invoice status,
+        overdue detection, and financial calculations.
+      </p>
+    </div>
+
+    <button type="button" class="refresh-button" (click)="loadDashboardData()">
+      Refresh Data
+    </button>
+  </header>
+
+  <div *ngIf="isLoading" class="state-card">
+    Loading dashboard data...
+  </div>
+
+  <div *ngIf="errorMessage" class="state-card error">
+    {{ errorMessage }}
+  </div>
+
+  <ng-container *ngIf="!isLoading && !errorMessage">
+    <section class="stats-grid">
+      <article class="stat-card">
+        <span>Total Customers</span>
+        <strong>{{ stats.totalCustomers }}</strong>
+      </article>
+
+      <article class="stat-card">
+        <span>Total Invoices</span>
+        <strong>{{ stats.totalInvoices }}</strong>
+      </article>
+
+      <article class="stat-card">
+        <span>Total Amount</span>
+        <strong>{{ formatCurrency(stats.totalAmount) }}</strong>
+      </article>
+
+      <article class="stat-card success">
+        <span>Paid Amount</span>
+        <strong>{{ formatCurrency(stats.paidAmount) }}</strong>
+      </article>
+
+      <article class="stat-card warning">
+        <span>Outstanding</span>
+        <strong>{{ formatCurrency(stats.outstandingAmount) }}</strong>
+      </article>
+
+      <article class="stat-card danger">
+        <span>Overdue Invoices</span>
+        <strong>{{ stats.overdueInvoices }}</strong>
+      </article>
+    </section>
+
+    <section class="content-grid">
+      <article class="panel">
+        <div class="panel-header">
+          <div>
+            <h2>Collection Rate</h2>
+            <p>Paid amount compared to total invoice value.</p>
+          </div>
+          <strong>{{ stats.collectionRate }}%</strong>
+        </div>
+
+        <div class="progress-track">
+          <div
+            class="progress-fill"
+            [style.width.%]="stats.collectionRate"
+          ></div>
+        </div>
+      </article>
+
+      <article class="panel">
+        <div class="panel-header">
+          <div>
+            <h2>Recent Invoices</h2>
+            <p>Latest invoices fetched from MockAPI.</p>
+          </div>
+        </div>
+
+        <div class="invoice-list">
+          <div class="invoice-row" *ngFor="let invoice of invoices.slice(0, 6)">
+            <div>
+              <strong>{{ invoice.invoiceNumber }}</strong>
+              <span>{{ invoice.customerName }}</span>
+            </div>
+
+            <div class="invoice-amount">
+              <strong>{{ formatCurrency(invoice.amount) }}</strong>
+              <span class="status" [class]="invoice.status">
+                {{ invoice.status }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </article>
+    </section>
+  </ng-container>
+</section>
