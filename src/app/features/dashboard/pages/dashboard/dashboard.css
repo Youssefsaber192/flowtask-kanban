@@ -37,6 +37,24 @@ h1 {
   line-height: 1.7;
 }
 
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.invoices-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 16px;
+  padding: 14px 18px;
+  background: #dbeafe;
+  color: #1d4ed8;
+  font-weight: 900;
+  text-decoration: none;
+}
+
 .refresh-button {
   border: 0;
   border-radius: 16px;
@@ -46,6 +64,11 @@ h1 {
   font-weight: 800;
   cursor: pointer;
   box-shadow: 0 16px 34px rgba(15, 23, 42, 0.18);
+}
+
+.refresh-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
 }
 
 .stats-grid {
@@ -208,6 +231,15 @@ h1 {
   background: #fef2f2;
 }
 
+.empty-state {
+  padding: 24px;
+  color: #64748b;
+  text-align: center;
+  border: 1px dashed #cbd5e1;
+  border-radius: 18px;
+  background: #ffffff;
+}
+
 @media (max-width: 1200px) {
   .stats-grid {
     grid-template-columns: repeat(3, 1fr);
@@ -226,6 +258,17 @@ h1 {
   .page-header {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .header-actions {
+    align-items: stretch;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .invoices-link,
+  .refresh-button {
+    width: 100%;
   }
 
   .stats-grid {

@@ -1,0 +1,150 @@
+<section class="invoices-page">
+  <header class="page-header">
+    <div>
+      <a routerLink="/" class="back-link">← Dashboard</a>
+      <p class="eyebrow">Invoice Management</p>
+      <h1>Invoices</h1>
+      <p class="description">
+        Manage invoices, track payment status, detect overdue balances, and
+        record new payments using MockAPI integration.
+      </p>
+    </div>
+
+    <div class="header-actions">
+      <a routerLink="/invoices/new" class="create-link">+ Add Invoice</a>
+
+      <button
+        type="button"
+        class="refresh-button"
+        [disabled]="isLoading"
+        (click)="loadInvoices()"
+      >
+        {{ isLoading ? 'Loading...' : 'Refresh' }}
+      </button>
+    </div>
+  </header>
+
+  <section class="toolbar">
+    <label class="search-box">
+      <span>Search</span>
+      <input
+        type="text"
+        placeholder="Search invoice, customer, or company..."
+        [(ngModel)]="searchTerm"
+      />
+    </label>
+
+    <label class="filter-box">
+      <span>Status</span>
+      <select [(ngModel)]="selectedStatus">
+        <option *ngFor="let status of statusOptions" [value]="status">
+          {{ getStatusOptionLabel(status) }}
+        </option>
+      </select>
+    </label>
+  </section>
+
+  <div *ngIf="isLoading" class="state-card">
+    Loading invoices...
+  </div>
+
+  <div *ngIf="errorMessage" class="state-card error">
+    {{ errorMessage }}
+  </div>
+
+  <section *ngIf="!isLoading && !errorMessage" class="table-card">
+    <div class="table-header">
+      <div>
+        <h2>Invoice Records</h2>
+        <p>{{ filteredInvoices.length }} invoices found</p>
+      </div>
+    </div>
+
+    <div
+      class="table-wrapper"
+      *ngIf="filteredInvoices.length > 0; else emptyState"
+    >
+      <table>
+        <thead>
+          <tr>
+            <th>Invoice</th>
+            <th>Customer</th>
+            <th>Due Date</th>
+            <th>Amount</th>
+            <th>Paid</th>
+            <th>Remaining</th>
+            <th>Status</th>
+            <th class="actions-column">Actions</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let invoice of filteredInvoices">
+            <td>
+              <strong>{{ invoice.invoiceNumber }}</strong>
+              <span>Issued: {{ invoice.issueDate | date: 'mediumDate' }}</span>
+            </td>
+
+            <td>
+              <strong>{{ invoice.customerName }}</strong>
+              <span>{{ invoice.customerCompany }}</span>
+            </td>
+
+            <td>
+              <strong>{{ invoice.dueDate | date: 'mediumDate' }}</strong>
+              <span *ngIf="invoice.overdueDays > 0">
+                {{ invoice.overdueDays }} days overdue
+              </span>
+            </td>
+
+            <td>{{ formatCurrency(invoice.amount) }}</td>
+
+            <td>{{ formatCurrency(invoice.paidAmount) }}</td>
+
+            <td>{{ formatCurrency(invoice.remainingAmount) }}</td>
+
+            <td class="status-cell">
+              <span class="status-badge" [class]="invoice.status">
+                {{ getStatusLabel(invoice.status) }}
+              </span>
+            </td>
+
+            <td class="actions-cell">
+              <div class="actions">
+                <a
+                  class="action-button edit"
+                  [routerLink]="['/invoices', invoice.id, 'edit']"
+                >
+                  Edit
+                </a>
+
+                <button
+                  type="button"
+                  class="action-button payment"
+                  [disabled]="invoice.status === 'paid'"
+                  (click)="recordPayment(invoice)"
+                >
+                  Payment
+                </button>
+
+                <button
+                  type="button"
+                  class="action-button delete"
+                  (click)="deleteInvoice(invoice)"
+                >
+                  Delete
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <ng-template #emptyState>
+      <div class="empty-state">
+        No invoices match your search or filter.
+      </div>
+    </ng-template>
+  </section>
+</section>

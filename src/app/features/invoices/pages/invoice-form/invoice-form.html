@@ -1,0 +1,118 @@
+<section class="invoice-form-page">
+  <div class="page-container">
+    <header class="page-header">
+      <a routerLink="/invoices" class="back-link">← Back to Invoices</a>
+
+      <p class="eyebrow">Invoice Management</p>
+      <h1>{{ pageTitle }}</h1>
+      <p class="description">
+        Create or update invoice records, assign customers, validate amounts,
+        and persist changes through MockAPI.
+      </p>
+    </header>
+
+    <div *ngIf="isLoading" class="state-card">
+      Loading invoice form...
+    </div>
+
+    <div *ngIf="errorMessage" class="state-card error">
+      {{ errorMessage }}
+    </div>
+
+    <form
+      *ngIf="!isLoading"
+      class="form-card"
+      [formGroup]="invoiceForm"
+      (ngSubmit)="submitForm()"
+    >
+      <div class="form-section-header">
+        <div>
+          <h2>Invoice Details</h2>
+          <p>Fill in the invoice information below.</p>
+        </div>
+      </div>
+
+      <div class="form-grid">
+        <label class="form-field">
+          <span>Invoice Number</span>
+          <input type="text" formControlName="invoiceNumber" readonly />
+          <small class="hint">Generated automatically by the system.</small>
+        </label>
+
+        <label class="form-field">
+          <span>Customer</span>
+          <select formControlName="customerId">
+            <option value="" disabled>Select customer</option>
+            <option *ngFor="let customer of customers" [value]="customer.id">
+              {{ customer.name }} - {{ customer.company }}
+            </option>
+          </select>
+          <small *ngIf="isFieldInvalid('customerId')">
+            Customer is required.
+          </small>
+          <small *ngIf="!isFieldInvalid('customerId')" class="placeholder-message">
+            Choose the customer linked to this invoice.
+          </small>
+        </label>
+
+        <label class="form-field">
+          <span>Issue Date</span>
+          <input type="date" formControlName="issueDate" />
+          <small *ngIf="isFieldInvalid('issueDate')">
+            Issue date is required.
+          </small>
+          <small *ngIf="!isFieldInvalid('issueDate')" class="placeholder-message">
+            The date the invoice was issued.
+          </small>
+        </label>
+
+        <label class="form-field">
+          <span>Due Date</span>
+          <input type="date" formControlName="dueDate" />
+          <small *ngIf="isFieldInvalid('dueDate')">
+            Due date is required.
+          </small>
+          <small *ngIf="!isFieldInvalid('dueDate')" class="placeholder-message">
+            The expected payment deadline.
+          </small>
+        </label>
+
+        <label class="form-field">
+          <span>Amount</span>
+          <input type="number" min="1" formControlName="amount" />
+          <small *ngIf="isFieldInvalid('amount')">
+            Amount must be greater than zero.
+          </small>
+          <small *ngIf="!isFieldInvalid('amount')" class="placeholder-message">
+            Total invoice value.
+          </small>
+        </label>
+
+        <label class="form-field">
+          <span>Paid Amount</span>
+          <input type="number" min="0" formControlName="paidAmount" />
+          <small *ngIf="isFieldInvalid('paidAmount')">
+            Paid amount cannot be negative.
+          </small>
+          <small *ngIf="!isFieldInvalid('paidAmount')" class="placeholder-message">
+            Amount already collected from the customer.
+          </small>
+        </label>
+      </div>
+
+      <div class="form-actions">
+        <a routerLink="/invoices" class="secondary-button">Cancel</a>
+
+        <button type="submit" class="primary-button" [disabled]="isSubmitting">
+          {{
+            isSubmitting
+              ? 'Saving...'
+              : isEditMode
+                ? 'Update Invoice'
+                : 'Create Invoice'
+          }}
+        </button>
+      </div>
+    </form>
+  </div>
+</section>

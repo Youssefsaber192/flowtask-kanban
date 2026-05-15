@@ -1,7 +1,7 @@
 <section class="dashboard-page">
   <header class="page-header">
     <div>
-      <!-- <p class="eyebrow">Angular Portfolio Project</p> -->
+      <p class="eyebrow">Angular Portfolio Project</p>
       <h1>InvoiceFlow</h1>
       <p class="description">
         Accounts receivable dashboard connected to MockAPI with invoice status,
@@ -9,9 +9,18 @@
       </p>
     </div>
 
-    <button type="button" class="refresh-button" (click)="loadDashboardData()">
-      Refresh Data
-    </button>
+    <div class="header-actions">
+      <a routerLink="/invoices" class="invoices-link">View Invoices</a>
+
+      <button
+        type="button"
+        class="refresh-button"
+        [disabled]="isLoading"
+        (click)="loadDashboardData()"
+      >
+        {{ isLoading ? 'Loading...' : 'Refresh Data' }}
+      </button>
+    </div>
   </header>
 
   <div *ngIf="isLoading" class="state-card">
@@ -62,6 +71,7 @@
             <h2>Collection Rate</h2>
             <p>Paid amount compared to total invoice value.</p>
           </div>
+
           <strong>{{ stats.collectionRate }}%</strong>
         </div>
 
@@ -94,6 +104,10 @@
                 {{ invoice.status }}
               </span>
             </div>
+          </div>
+
+          <div class="empty-state" *ngIf="invoices.length === 0">
+            No invoices found.
           </div>
         </div>
       </article>

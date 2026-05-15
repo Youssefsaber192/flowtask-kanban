@@ -5,6 +5,7 @@ import {
   OnInit,
   inject,
 } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { catchError, finalize, forkJoin, of } from 'rxjs';
 
 import { Customer } from '../../../../core/models/customer.model';
@@ -35,7 +36,7 @@ interface DashboardStats {
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
 })
@@ -95,9 +96,6 @@ export class Dashboard implements OnInit {
         })
       )
       .subscribe(({ customers, invoices }) => {
-        console.log('API customers:', customers);
-        console.log('API invoices:', invoices);
-
         const safeCustomers = Array.isArray(customers) ? customers : [];
         const safeInvoices = Array.isArray(invoices) ? invoices : [];
 
